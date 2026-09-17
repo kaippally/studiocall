@@ -1,0 +1,194 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; margin: 0; }
+body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #0b0d10; color: #e7eaf0; }
+
+/* ── Browser-style file tabs ── */
+.nav-tab-bar {
+  /* tab bar background — the "gutter" colour shown behind inactive tabs */
+  background: #080a0c;
+}
+
+.nav-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 13px;
+  height: 100%;
+  font-size: calc(0.7rem * var(--ui-font-scale, 1));
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #64748b;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.12s, background 0.12s;
+  /* ensure pseudo-elements clip within column */
+  overflow: visible;
+  white-space: nowrap;
+  /* bottom border sits on the bar border — we erase it for the active tab */
+  border-bottom: 1px solid #1e2530;
+}
+
+.nav-tab:hover:not(.nav-tab--active) {
+  color: #cbd5e1;
+  background: #0f1318;
+}
+
+/* Active tab — raised panel look */
+.nav-tab--active {
+  color: #fb7185;
+  background: #0b0d10;   /* matches the content area bg */
+  border-bottom: 1px solid #0b0d10; /* erase bottom border to merge with content */
+  border-left: 1px solid #1e2530;
+  border-top: 1px solid #1e2530;
+  border-right: 1px solid #1e2530;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+/* Outward wing at bottom-left of active tab.
+   The wing is a small square filled with the tab bg (#0b0d10).
+   A radial gradient punches a quarter-circle hole at the top-right corner,
+   revealing the gutter bg (#080a0c) beneath — that hole IS the outward curve. */
+.nav-tab--active::before {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: -7px;
+  width: 7px;
+  height: 7px;
+  /* Fill with tab bg; punch circular cutout at top-right revealing gutter */
+  background: radial-gradient(circle at 100% 0%, #080a0c 7px, #0b0d10 7px);
+  pointer-events: none;
+}
+
+/* Outward wing at bottom-right of active tab */
+.nav-tab--active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: -7px;
+  width: 7px;
+  height: 7px;
+  background: radial-gradient(circle at 0% 0%, #080a0c 7px, #0b0d10 7px);
+  pointer-events: none;
+}
+
+/* Drag-over highlight */
+.nav-tab--drag-over {
+  color: #e2e8f0;
+  background: #0f1318;
+  border: 1px dashed #475569;
+  border-radius: 0;
+}
+
+/* On-air blink — a Content item is showing in OBS. Applied to the nav tab label
+   and to the playing tile's thumbnail so it is clear where content is on air. */
+@keyframes onair-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+.nav-tab--onair:not(.nav-tab--active) {
+  color: #fb7185;
+  animation: onair-blink 1s ease-in-out infinite;
+}
+/* ── Overlay layer animations ── */
+@keyframes ol-fadeIn        { from { opacity: 0; }                    to { opacity: 1; } }
+@keyframes ol-fadeOut       { from { opacity: 1; }                    to { opacity: 0; } }
+@keyframes ol-crashLandTop  { from { opacity: 0; transform: translateY(-120%) rotate(-4deg); } to { opacity: 1; transform: none; } }
+@keyframes ol-bounceFromBot { 0% { opacity: 0; transform: translateY(60%); } 60% { transform: translateY(-8%); } 80% { transform: translateY(4%); } 100% { opacity: 1; transform: none; } }
+@keyframes ol-zipInRight    { from { opacity: 0; transform: translateX(100%) scaleX(1.1); } to { opacity: 1; transform: none; } }
+@keyframes ol-zipInSpin     { from { opacity: 0; transform: translateX(80%) rotate(15deg) scale(0.8); } to { opacity: 1; transform: none; } }
+@keyframes ol-explode       { 0% { opacity: 1; transform: scale(1); } 60% { opacity: 0.6; transform: scale(1.35); } 100% { opacity: 0; transform: scale(1.6); } }
+@keyframes ol-vibrateLeft   { 0%,100% { transform: translateX(0); opacity: 1; } 15% { transform: translateX(-12px); } 30% { transform: translateX(8px); } 45% { transform: translateX(-16px); } 60% { transform: translateX(10px); opacity: 0.6; } 75% { transform: translateX(-200px); opacity: 0; } }
+@keyframes ol-vibrateRight  { 0%,100% { transform: translateX(0); opacity: 1; } 15% { transform: translateX(12px); } 30% { transform: translateX(-8px); } 45% { transform: translateX(16px); } 60% { transform: translateX(-10px); opacity: 0.6; } 75% { transform: translateX(200px); opacity: 0; } }
+
+.ol-anim-fadeIn        { animation: ol-fadeIn        0.6s ease both; }
+.ol-anim-crashLandTop  { animation: ol-crashLandTop  0.55s cubic-bezier(0.22,1,0.36,1) both; }
+.ol-anim-bounceFromBot { animation: ol-bounceFromBot 0.7s cubic-bezier(0.22,1,0.36,1) both; }
+.ol-anim-zipInRight    { animation: ol-zipInRight    0.4s cubic-bezier(0.22,1,0.36,1) both; }
+.ol-anim-zipInSpin     { animation: ol-zipInSpin     0.45s cubic-bezier(0.22,1,0.36,1) both; }
+.ol-anim-fadeOut       { animation: ol-fadeOut       0.6s ease both; }
+.ol-anim-explode       { animation: ol-explode       0.55s ease both; }
+.ol-anim-vibrateLeft   { animation: ol-vibrateLeft   0.65s ease both; }
+.ol-anim-vibrateRight  { animation: ol-vibrateRight  0.65s ease both; }
+
+/* ── Show-strip keyboard-focus cue ──
+   shortcuts.ts toggles body.timeline-keys whenever the cursor is over (or last clicked)
+   #app-timeline-strip — i.e. when the STRIP owns the keyboard, whichever view it is showing
+   (timeline or MediaSheet grid). The rectangle belongs to the shared parent wrapper, not to
+   either view, so it frames both identically.
+   z-index must clear the strip's own content — the grid's sticky header sits at z-20, and at
+   the old z-6 the rectangle was painted underneath it and looked clipped in grid view. */
+/* `isolation` gives the strip its OWN stacking context, which keeps the rectangle's
+   z-index a private matter. Without it the ::before competed in the root context and
+   painted across anything below 60 — including portalled dialogs, which is how the red
+   line ended up drawn through the music clip editor. topZIndex() can't defend against
+   this either: it scans elements, and a pseudo-element has none to find. */
+.timeline-strip-wrap { isolation: isolate; }
+.timeline-strip-wrap::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 60;
+  border: 2px solid transparent;
+  transition: border-color 120ms ease;
+}
+body.timeline-keys .timeline-strip-wrap::before { border-color: #ef4444; }
+
+/* News Desk ticker — the track holds the headline list twice, so translating it
+   exactly -50% lands on the identical second copy and the loop is seamless. */
+@keyframes newsdesk-ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.newsdesk-ticker-track {
+  animation: newsdesk-ticker var(--ticker-duration, 60s) linear infinite;
+  will-change: transform;
+}
+.newsdesk-ticker-track:hover { animation-play-state: paused; }
+
+/* Story popout on a light background. The copy is written in light-on-dark slates, so
+   without this a pale background colour makes the whole story invisible. */
+.news-light .text-slate-50,
+.news-light .text-slate-200,
+.news-light .text-slate-300 { color: #0f172a; }
+.news-light .text-slate-400,
+.news-light .text-slate-500,
+.news-light .text-slate-600 { color: #475569; }
+.news-light .border-slate-700 { border-color: #94a3b8; }
+.news-light .border-slate-800 { border-color: #cbd5e1; }
+
+/* A plain checker, for a colour chip to show its alpha against. */
+.debunk-checker {
+  background-color: #0f172a;
+  background-image: repeating-conic-gradient(#0f172a 0% 25%, #475569 0% 50%);
+  background-size: 8px 8px;
+}
+
+/* The bed the debunk design preview sits on. A box over video is judged by how much of the
+   picture survives it, so the preview needs a picture: a checker for transparency to read
+   against, and enough edge detail for backdrop-blur to have something to blur. */
+.debunk-bed {
+  background-color: #1e293b;
+  background-image:
+    linear-gradient(135deg, rgba(56, 189, 248, 0.35), rgba(217, 70, 239, 0.25) 60%, rgba(250, 204, 21, 0.3)),
+    repeating-conic-gradient(#0f172a 0% 25%, #334155 0% 50%);
+  background-size: 100% 100%, 16px 16px;
+}
+
+/* A button group drawn in the Quick Access Panel.
+   The bottom rail is wide and short, so every group is built as one long row that scrolls
+   sideways. The QAP is the opposite shape: there is no width to scroll into, and a horizontal
+   scrollbar inside a 300px column hides half the buttons behind a drag. So in the QAP — and only
+   there — a group's rows wrap instead of scrolling, and the group takes the height it needs.
+   It is a descendant rule because the groups themselves are shared with the bottom rail and must
+   keep scrolling there. → QuickAccessPanel.tsx */
+.qap-group > * {
+  flex-wrap: wrap;
+}
+.qap-group [class*='overflow-x-auto'] {
+  overflow-x: visible;
+  flex-wrap: wrap;
+}

@@ -1,0 +1,8 @@
+node_modules/
+.env
+data/
+dist/
+review/
+*.log
+*.tsbuildinfo
+vite.config.ts.timestamp-*

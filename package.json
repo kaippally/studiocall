@@ -1,0 +1,21 @@
+{
+  "name": "studiocall",
+  "version": "1.0.0",
+  "description": "StudioCall — a standalone Clubhouse room desk: the Clubhouse API server (:4019), its web UI (:5220) and the Agora RTC audio engine (:4018).",
+  "main": "engine/main.js",
+  "scripts": {
+    "start": "powershell -NoProfile -ExecutionPolicy Bypass -File start.ps1",
+    "engine": "electron .",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "agora-electron-sdk": "4.6.2",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "private": true,
+  "license": "MIT"
+}
